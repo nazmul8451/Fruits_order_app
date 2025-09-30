@@ -7,12 +7,7 @@ void main() {
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
-      builder: (context) =>
-      const MaterialApp(
-        useInheritedMediaQuery: true,
-        debugShowCheckedModeBanner: false,
-        home: E_CommerceApp(),
-      ),
+      builder: (context) => E_CommerceApp()
     ),
   );
 }
