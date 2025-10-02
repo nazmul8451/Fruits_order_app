@@ -1,4 +1,5 @@
 import 'package:e_commerce_ui/screens/authentication_screen.dart';
+import 'package:e_commerce_ui/screens/home_screen.dart';
 import 'package:e_commerce_ui/screens/splash_screen.dart';
 import 'package:e_commerce_ui/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class E_CommerceApp extends StatelessWidget {
         GetPage(name: SplashScreen.name, page:() =>SplashScreen()),
         GetPage(name: WelcomeScreen.name, page: ()=> WelcomeScreen()),
         GetPage(name: AuthenticationScreen.name, page: ()=> AuthenticationScreen()),
+        GetPage(name: HomeScreen.name, page: ()=> HomeScreen()),
       ],
     );
   }

@@ -1,5 +1,8 @@
+import 'package:e_commerce_ui/screens/home_screen.dart';
 import 'package:e_commerce_ui/widgets/custom_elaveted_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class AuthenticationScreen extends StatelessWidget {
   const AuthenticationScreen({super.key});
@@ -43,7 +46,7 @@ class AuthenticationScreen extends StatelessWidget {
                           height: screenHeigth * 0.325,
                           fit: BoxFit.contain,
                         ),
-                        SizedBox(height: screenHeigth*0.01),
+                        SizedBox(height: screenHeigth * 0.01),
 
                         Image.asset(
                           'assets/img/welcome_shadow.png',
@@ -71,28 +74,32 @@ class AuthenticationScreen extends StatelessWidget {
                         ),
                         SizedBox(height: screenHeigth * 0.03),
                         Container(
-                          height: screenHeigth*0.07,
+                          height: screenHeigth * 0.07,
                           width: screenWidth,
                           decoration: BoxDecoration(
                             color: Color(0xFFF3F1F1),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Center(child: TextFormField(
-                            cursorColor: Color(0xFFC2BDBD),
-                            decoration: InputDecoration(
-                              hintText: 'Name',
-                              hintStyle: TextStyle(color: Color(0xFFC2BDBD)),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none
-                              )
+                          child: Center(
+                            child: TextFormField(
+                              cursorColor: Color(0xFFC2BDBD),
+                              decoration: InputDecoration(
+                                hintText: 'Name',
+                                hintStyle: TextStyle(color: Color(0xFFC2BDBD)),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
                             ),
-                          ),),
+                          ),
                         ),
                         SizedBox(height: screenHeigth * 0.05),
                         CustomElevatedButton(
-                            screenHeigth: screenHeigth,
-                            screenWidth: screenWidth,
-                            onPressed: (){}, buttonText: "Start Ordering")
+                          screenHeigth: screenHeigth,
+                          screenWidth: screenWidth,
+                          onPressed: () => Get.toNamed(HomeScreen.name),
+                          buttonText: "Start Ordering",
+                        ),
                       ],
                     ),
                   ),
