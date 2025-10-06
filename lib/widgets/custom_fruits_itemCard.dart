@@ -1,65 +1,75 @@
 
+import 'package:e_commerce_ui/models/product_model.dart';
+import 'package:e_commerce_ui/service_center/basket_controller.dart';
+import 'package:e_commerce_ui/service_center/favorite_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 class Custom_fruit_card extends StatelessWidget {
-  const Custom_fruit_card({
+   Custom_fruit_card({
     super.key,
     required this.width,
     required this.colorForCard,
     required this.heigth,
     required this.imgPath,
+     required this.fruit,
   });
   final String imgPath;
   final double width;
   final Color colorForCard;
   final double heigth;
-
+  final FavoriteController controller = Get.find();
+  final BasketController basketController = Get.find();
+  FruitItem fruit;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       child: Container(
         width: width * 0.40,
-
         margin:const EdgeInsets.only(right:10) ,
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: colorForCard,
         ),
         child: Column(
           children: [
-            Stack(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                //img
-                Container(
-                  padding: EdgeInsets.all(4),
-                  height: 70,
-                  width: double.infinity,
-                  child: Image.asset('assets/img/fruits4.png'),
-                ),
-                //favorite icon for card
-                Positioned(
-                  right: 8,
-                  top: 4,
-                  child: Icon(
-                    Icons.favorite_border,
-                    color: Colors.orange,
-                    size: 22,
+                Obx(()=> IconButton(
+                    onPressed: (){
+                      controller.toggleFavorite(fruit);
+                    },
+                    icon:Icon(
+                      fruit.isFavorite.value
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      color: Colors.orange,
+                    ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: heigth * 0.01),
+            Container(
+              padding: EdgeInsets.all(4),
+              height: 50,
+              width: double.infinity,
+              child: Image.asset(fruit.imgPath,),
+            ),
+            //favorite icon for card
             Center(
               child: Text(
-                'Quinoa fruit salad',
+                fruit.name,
                 style: TextStyle(
                   fontSize: width * 0.04,
                   fontWeight: FontWeight.w600,
                   color: Colors.black87,
+                  overflow: TextOverflow.ellipsis
                 ),
               ),
             ),
-            SizedBox(height: heigth * 0.02),
+            SizedBox(height: heigth * 0.01),
             Row(
               children: [
                 Image.asset(
@@ -69,7 +79,7 @@ class Custom_fruit_card extends StatelessWidget {
                 ),
                 SizedBox(width: 5),
                 Text(
-                  '2000',
+                  fruit.price,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w400,

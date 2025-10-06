@@ -1,12 +1,24 @@
-import 'package:e_commerce_ui/screens/home_screen.dart';
+import 'package:e_commerce_ui/models/product_model.dart';
+import 'package:e_commerce_ui/screens/add_basket_screen.dart';
+import 'package:e_commerce_ui/screens/favorite_item_screen.dart';
+import 'package:e_commerce_ui/screens/my_basket_screen.dart';
+import 'package:e_commerce_ui/screens/search_screen.dart';
+import 'package:e_commerce_ui/service_center/basket_controller.dart';
+import 'package:e_commerce_ui/service_center/favorite_controller.dart';
 import 'package:e_commerce_ui/widgets/custom_fruits_itemCard.dart';
 import 'package:e_commerce_ui/widgets/custom_item_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  HomeScreen({super.key, this.fruit, required this.userName});
 
+  final String? userName;
+  final FruitItem? fruit;
   static const String name = '/home-screen';
+
+  final BasketController basketController = Get.find();
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -14,6 +26,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final List<String> tabs = ["Hottest", "Popular", "New combo", "Top"];
+
+  final FavoriteController controller = Get.put(FavoriteController());
 
   final List<Color> colorForCard = [
     const Color(0xFFFFFAEB),
@@ -26,7 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
     'assets/img/fruits4.png',
     'assets/img/fruits4.png',
     'assets/img/fruits3.png',
-
   ];
 
   int selectedIndex = 0;
@@ -40,31 +53,37 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
-        leading: Icon(Icons.menu,size: 30,),
+        leading: Icon(Icons.menu, size: 30),
         actions: [
           Padding(
             padding: const EdgeInsets.all(5.0),
-            child: Container(
-              child: Column(
-                children: [
-                  Icon(Icons.favorite_border, color: Colors.orange,),
-                  Text('Fav')
-                ],
+            child: GestureDetector(
+              onTap: () => Get.toNamed(FavoriteItemScreen.name),
+              child: Container(
+                child: Column(
+                  children: [
+                    Icon(Icons.favorite_border, color: Colors.orange),
+                    Text('Fav'),
+                  ],
+                ),
               ),
             ),
           ),
-          SizedBox(width: 10,),
+          SizedBox(width: 10),
           Padding(
             padding: const EdgeInsets.all(5.0),
-            child: Container(
-            child: Column(
-            children: [
-            Icon(Icons.shopping_cart_outlined, color: Colors.orange,),
-            Text('My basket')
-            ],
+            child: GestureDetector(
+              onTap: () => Get.toNamed(MyBasket.name),
+              child: Container(
+                child: Column(
+                  children: [
+                    Icon(Icons.shopping_cart_outlined, color: Colors.orange),
+                    Text('My basket'),
+                  ],
+                ),
+              ),
             ),
-            ),
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -74,28 +93,44 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Hello Tony, What fruit salad\ncombo do you want today?',
-                  style: TextStyle(fontSize: width * 0.05),
+                RichText(
+                  text: TextSpan(
+                    text: 'Hello ${widget.userName},',
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: ' What fruit salad\ncombo do you want today?',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: heigth * 0.02),
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Color(0xFFF3F4F9),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            children: [
-                              Icon(Icons.search),
-                              SizedBox(width: 10),
-                              Text('Search for fruit salad combos'),
-                            ],
+                      child: GestureDetector(
+                        onTap: (){
+                          Get.toNamed(SearchScreen.name);
+                        },
+                        child: Container(
+                          height: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Color(0xFFF3F4F9),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              children: [
+                                Icon(Icons.search),
+                                SizedBox(width: 10),
+                                Text('Search for fruit salad combos'),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -120,26 +155,30 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
 
-                SizedBox(height: heigth * .03),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomCard(
-                      width: width,
-                      heigth: heigth,
-                      imgPath: 'assets/img/fruits1.png',
+                SizedBox(height: 10),
+                SizedBox(
+                  height: 250,
+                  child: GridView.builder(
+                    itemCount: controller.items.length,
+                    physics: const BouncingScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 15,
+                      crossAxisSpacing: 12,
+                      childAspectRatio: 0.8,
                     ),
-                    CustomCard(
-                      width: width,
-                      heigth: heigth,
-                      imgPath: 'assets/img/fruits2.png',
-                    ),
-                  ],
+                    itemBuilder: (context, index) {
+                      final fruit = controller.items[index];
+                      return GestureDetector(
+                        onTap: () => Get.to(AddBasketScreen(fruit: fruit)),
+                        child: CustomCard(fruit: fruit),
+                      );
+                    },
+                  ),
                 ),
 
-                SizedBox(height: heigth * .03),
 
+                SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Column(
@@ -200,25 +239,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.all(0),
                   child: SizedBox(
-                    height: heigth*0.20,
+                    height: heigth * 0.20,
                     child: ListView.builder(
-                        itemCount: imgPath.length,
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return Custom_fruit_card(
-                            imgPath: imgPath[index],
-                              width: width,
-                              colorForCard: colorForCard[index % colorForCard.length],
-                              heigth: heigth,
-                          );
-                        }),
+                      itemCount: controller.popularItems.length,
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Custom_fruit_card(
+                          fruit: controller.popularItems[index],
+                          imgPath: imgPath[index],
+                          width: width,
+                          colorForCard:
+                              colorForCard[index % colorForCard.length],
+                          heigth: heigth,
+                        );
+                      },
+                    ),
                   ),
                 ),
-                //popular item fruit card
-                SizedBox(height: heigth * .03),
-
               ],
             ),
           ),
@@ -227,4 +266,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

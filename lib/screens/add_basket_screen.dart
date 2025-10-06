@@ -1,8 +1,17 @@
+import 'package:e_commerce_ui/models/product_model.dart' show FruitItem;
+import 'package:e_commerce_ui/service_center/basket_controller.dart';
 import 'package:e_commerce_ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class AddBasketScreen extends StatelessWidget {
-  const AddBasketScreen({super.key});
+  AddBasketScreen({super.key, required this.fruit});
+
+  final FruitItem fruit;
+  static const String name = '/add-basket-screen';
+
+  final BasketController basketController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +20,7 @@ class AddBasketScreen extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Color(0xFFFFA451),
-        appBar: MyAppBart(),
+        appBar: MyAppBar(),
         body: Column(
           children: [
             SizedBox(
@@ -20,7 +29,7 @@ class AddBasketScreen extends StatelessWidget {
               child: Container(
                 height: screenHeight * 0.100,
                 width: screenWidth * 0.200,
-                child: Image.asset('assets/img/fruits4.png'),
+                child: Image.asset(fruit.imgPath),
               ),
             ),
             Expanded(
@@ -47,7 +56,7 @@ class AddBasketScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Quinoa Fruit Salad',
+                                    fruit.name,
                                     style: TextStyle(
                                       fontSize: screenHeight * 0.025,
                                       fontWeight: FontWeight.w700,
@@ -70,12 +79,12 @@ class AddBasketScreen extends StatelessWidget {
                                               size: 25,
                                               color: Color(0xFF333333),
                                             ),
-                                          
+
                                             Text(
                                               '0',
                                               style: TextStyle(fontSize: 23),
                                             ),
-                                          
+
                                             Container(
                                               height: 25,
                                               width: 25,
@@ -108,7 +117,7 @@ class AddBasketScreen extends StatelessWidget {
                                           ),
                                           SizedBox(width: 5),
                                           Text(
-                                            '2000',
+                                            fruit.price,
                                             style: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.w400,
@@ -149,7 +158,7 @@ class AddBasketScreen extends StatelessWidget {
                                     ),
                                   ),
                                   SizedBox(height: screenHeight * 0.015),
-                                          
+
                                   Wrap(
                                     children: [
                                       Text(
@@ -179,7 +188,7 @@ class AddBasketScreen extends StatelessWidget {
                                     ],
                                   ),
                                   SizedBox(height: screenHeight * 0.015),
-                                          
+
                                   Divider(height: 1, color: Color(0xFFF3F3F3)),
                                   SizedBox(height: screenHeight * 0.015),
                                   Text(
@@ -191,50 +200,57 @@ class AddBasketScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                     Spacer(),
+                      Spacer(),
                       Expanded(
-                        child: Padding(padding: EdgeInsets.all(20),
-                          child:Row(
-                         children: [
-                           Container(
-                             width: 60,
-                             height: 60,
-                             decoration: BoxDecoration(
-                               color: Color(0xFFFFF7F0),
-                               borderRadius: BorderRadius.circular(
-                                 100,
-                               ),
-                             ),
-                             child: Icon(
-                               Icons.favorite_border_outlined,
-                               size: 30,
-                               color: Color(0xFFFFA451),
-                             ),
-                           ),
-                           // Favorite item conteianer
-                           Expanded(
-                             child: Container(
-                               margin: EdgeInsets.only(left: 30),
-                               height: 60,
-                               decoration: BoxDecoration(
-                                 color: Color(0xFFFFA451),
-                                 borderRadius:
-                                 BorderRadius.circular(12),
-                               ),
-                               child: Center(
-                                 child: Text(
-                                   'Add to basket',
-                                   style: TextStyle(
-                                     fontSize: 16,
-                                     color: Colors.white,
-                                   ),
-                                 ),
-                               ),
-                             ),
-                           ),
-                         ],
-                                             ),),
-                      )
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFFFF7F0),
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                child: Icon(
+                                  Icons.favorite_border_outlined,
+                                  size: 30,
+                                  color: Color(0xFFFFA451),
+                                ),
+                              ),
+
+                              // Favorite item conteianer
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: (){
+                                    basketController.addToBasket(fruit);
+                                    Get.snackbar('Added!', "${fruit.name} added to basket");
+
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 30),
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFFFA451),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'Add to basket',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

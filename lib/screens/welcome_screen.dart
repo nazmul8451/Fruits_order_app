@@ -1,3 +1,4 @@
+import 'package:e_commerce_ui/models/product_model.dart';
 import 'package:e_commerce_ui/screens/authentication_screen.dart';
 import 'package:e_commerce_ui/screens/welcome_screen.dart';
 import 'package:e_commerce_ui/widgets/custom_elaveted_button.dart';
@@ -6,7 +7,8 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
+   WelcomeScreen({super.key,});
+
 
   static const String name = '/welcome-screen';
 
