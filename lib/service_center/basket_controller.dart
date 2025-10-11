@@ -1,9 +1,10 @@
 import 'package:e_commerce_ui/models/product_model.dart';
-import 'package:get/get.dart';
+import 'package:flutter/cupertino.dart';
 
-class BasketController extends GetxController{
+
+class BasketController extends ChangeNotifier{
   //basket item list
-  final basketItems =<FruitItem>[].obs;
+  final basketItems =<FruitItem>[];
 
   //item add method
   void addToBasket(FruitItem item){
@@ -26,6 +27,4 @@ double get totalPrice{
     }
     return total;
 }
-
-
 }

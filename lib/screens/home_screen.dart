@@ -3,13 +3,13 @@ import 'package:e_commerce_ui/screens/add_basket_screen.dart';
 import 'package:e_commerce_ui/screens/favorite_item_screen.dart';
 import 'package:e_commerce_ui/screens/my_basket_screen.dart';
 import 'package:e_commerce_ui/screens/search_screen.dart';
-import 'package:e_commerce_ui/service_center/basket_controller.dart';
 import 'package:e_commerce_ui/service_center/favorite_controller.dart';
 import 'package:e_commerce_ui/widgets/custom_fruits_itemCard.dart';
 import 'package:e_commerce_ui/widgets/custom_item_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key, this.fruit, required this.userName});
@@ -18,17 +18,12 @@ class HomeScreen extends StatefulWidget {
   final FruitItem? fruit;
   static const String name = '/home-screen';
 
-  final BasketController basketController = Get.find();
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   final List<String> tabs = ["Hottest", "Popular", "New combo", "Top"];
-
-  final FavoriteController controller = Get.put(FavoriteController());
-
   final List<Color> colorForCard = [
     const Color(0xFFFFFAEB),
     const Color(0xFFFEF0F0),
@@ -41,9 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     'assets/img/fruits4.png',
     'assets/img/fruits3.png',
   ];
-
   int selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -51,14 +44,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
-        leading: Icon(Icons.menu, size: 30),
+        leading:Icon(Icons.menu_sharp),
         actions: [
           Padding(
             padding: const EdgeInsets.all(5.0),
             child: GestureDetector(
-              onTap: () => Get.toNamed(FavoriteItemScreen.name),
+              onTap: (){
+                Navigator.pushNamed(context,FavoriteItemScreen.name);
+              },
               child: Container(
                 child: Column(
                   children: [
@@ -73,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.all(5.0),
             child: GestureDetector(
-              onTap: () => Get.toNamed(MyBasket.name),
+              onTap: () =>  Navigator.pushNamed(context,MyBasket.name),
               child: Container(
                 child: Column(
                   children: [
@@ -158,22 +154,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: 10),
                 SizedBox(
                   height: 250,
-                  child: GridView.builder(
-                    itemCount: controller.items.length,
-                    physics: const BouncingScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 15,
-                      crossAxisSpacing: 12,
-                      childAspectRatio: 0.8,
-                    ),
-                    itemBuilder: (context, index) {
-                      final fruit = controller.items[index];
-                      return GestureDetector(
-                        onTap: () => Get.to(AddBasketScreen(fruit: fruit)),
-                        child: CustomCard(fruit: fruit),
-                      );
-                    },
+                  child: Consumer<FavoriteItemController>(
+                    builder:(context,controller,child){
+                      return GridView.builder(
+                      itemCount: controller.items.length,
+                      physics: const BouncingScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 15,
+                        crossAxisSpacing: 12,
+                        childAspectRatio: 0.8,
+                      ),
+                      itemBuilder: (context, index) {
+                        final fruit = controller.items[index];
+                        return GestureDetector(
+                          onTap: () => Get.to(AddBasketScreen(fruit: fruit)),
+                          child: CustomCard(fruit: fruit),
+                        );
+                      },
+                    );
+                    }
+
                   ),
                 ),
 
@@ -240,21 +241,25 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.all(0),
                   child: SizedBox(
                     height: heigth * 0.20,
-                    child: ListView.builder(
-                      itemCount: controller.popularItems.length,
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      physics: BouncingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return Custom_fruit_card(
-                          fruit: controller.popularItems[index],
-                          imgPath: imgPath[index],
-                          width: width,
-                          colorForCard:
+                    child: Consumer<FavoriteItemController>(
+                      builder:(context,controller,child) {
+                        return ListView.builder(
+                          itemCount: controller.popularItem.length,
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          physics: BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return Custom_fruit_card(
+                              fruit: controller.popularItem[index],
+                              imgPath: imgPath[index],
+                              width: width,
+                              colorForCard:
                               colorForCard[index % colorForCard.length],
-                          heigth: heigth,
+                              heigth: heigth,
+                            );
+                          },
                         );
-                      },
+                      }
                     ),
                   ),
                 ),

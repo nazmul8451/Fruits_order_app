@@ -1,3 +1,4 @@
+import 'package:e_commerce_ui/screens/log_in_screen.dart';
 import 'package:e_commerce_ui/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,8 +10,8 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 3), () {
-      Get.offNamed(WelcomeScreen.name);
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushReplacementNamed(context, LogInScreen.name);
     });
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;

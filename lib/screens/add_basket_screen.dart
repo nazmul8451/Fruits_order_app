@@ -4,6 +4,7 @@ import 'package:e_commerce_ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:provider/provider.dart';
 
 class AddBasketScreen extends StatelessWidget {
   AddBasketScreen({super.key, required this.fruit});
@@ -11,7 +12,6 @@ class AddBasketScreen extends StatelessWidget {
   final FruitItem fruit;
   static const String name = '/add-basket-screen';
 
-  final BasketController basketController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -222,29 +222,35 @@ class AddBasketScreen extends StatelessWidget {
 
                               // Favorite item conteianer
                               Expanded(
-                                child: GestureDetector(
-                                  onTap: (){
-                                    basketController.addToBasket(fruit);
-                                    Get.snackbar('Added!', "${fruit.name} added to basket");
-
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(left: 30),
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFFFA451),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Add to basket',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white,
+                                child: Consumer<BasketController>(
+                                  builder:(context,controller,child) {
+                                  return GestureDetector(
+                                      onTap: () {
+                                        controller.addToBasket(fruit);
+                                        Get.snackbar('Added!',
+                                            "${fruit.name} added to basket");
+                                      },
+                                      child: Container(
+                                        margin: EdgeInsets.only(left: 30),
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFFFA451),
+                                          borderRadius: BorderRadius.circular(
+                                              12),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            'Add to basket',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
+                                    );
+
+                                  }
                                 ),
                               ),
                             ],

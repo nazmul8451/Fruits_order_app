@@ -3,9 +3,9 @@ import 'package:e_commerce_ui/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:provider/provider.dart';
 class FavoriteItemScreen extends StatelessWidget {
 
-  final FavoriteController controller = Get.find();
    FavoriteItemScreen({super.key});
   static const String name = '/favorite-screen';
 
@@ -21,67 +21,82 @@ class FavoriteItemScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: BackButton(
-          onPressed: ()=> Get.back(),
+          onPressed: ()=> Navigator.pop(context),
         ),
         backgroundColor: Color(0xFFFFA451),
         title:Text('My Favorite',style: TextStyle(color: Colors.white),),
         centerTitle: true,
       ),
 
-      body: Obx((){
+      body: Consumer<FavoriteItemController>(
+          builder: (context,controller,child){
         final favorites = controller.favoriteItems;
         if(favorites.isEmpty){
-          return Center(child: Text('No favorites yet'),);
+          return Center(
+            child: Text('No favorites yet'),
+          );
         }
         return ListView.builder(
-          itemCount: favorites.length,
+            itemCount: favorites.length,
             itemBuilder: (context,index){
-            final fruits = favorites[index];
-            return  Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 80,
-                        height: 80, // ekhane height set kora
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: colorForContainer[index % colorForContainer.length],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Image.asset(
-                            fruits.imgPath,
-                            width: 30,
-                            height: 30,
+              final fruits = favorites[index];
+              if(favorites.isEmpty){
+                return Center(
+                  child: Text('No favorites yet'),
+                );
+              }
+              return  Column(
+                  key :ValueKey(fruits.name),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 80,
+                          height: 80, // ekhane height set kora
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: colorForContainer[index % colorForContainer.length],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Image.asset(
+                              fruits.imgPath,
+                              width: 30,
+                              height: 30,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          fruits.name,
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            fruits.name,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.favorite, color: Colors.orange),
-                        onPressed: () {
-                          controller.toggleFavorite(fruits);
-                        },
-                      ),
-                    ],
+                        IconButton(
+                          icon: Icon(Icons.favorite, color: Colors.orange),
+                          onPressed: () {
+                            controller.toggleFavorite(fruits);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Divider(
-                  color: Colors.grey[200],
-                )
-              ],
-            );
+                  Divider(
+                    color: Colors.grey[200],
+                  )
+                ],
+              );
             });
-      }),
+      }
+
+
+
+      ),//
     );
   }
+
+
 }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:provider/provider.dart';
 
 class MyBasket extends StatelessWidget {
   MyBasket({super.key});
@@ -17,7 +18,6 @@ class MyBasket extends StatelessWidget {
     const Color(0xFFFEF0F0),
     const Color(0xFFF1EFF6),
   ];
-  final BasketController basketController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class MyBasket extends StatelessWidget {
       appBar: AppBar(
         leading: BackButton(
           onPressed: () {
-            Get.back();
+            Navigator.pop(context);
           },
         ),
         backgroundColor: Color(0xFFFFA451),
@@ -38,63 +38,65 @@ class MyBasket extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: Obx(() {
-              if (basketController.basketItems.isEmpty) {
-                return const Center(child: Text('Your basket is empty'));
-              }
-              return ListView.builder(
-                itemCount: basketController.basketItems.length,
-                itemBuilder: (context, index) {
-                  final basketItem = basketController.basketItems[index];
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 80,
-                              height: 80, // ekhane height set kora
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color:
-                                    colorForContainer[index %
-                                        colorForContainer.length],
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Image.asset(
-                                  basketItem.imgPath,
-                                  width: 30,
-                                  height: 30,
+            child: Consumer<BasketController>(
+              builder: (context, controller, child) {
+                if (controller.basketItems.isEmpty) {
+                  return const Center(child: Text('Your basket is empty'));
+                }
+                return ListView.builder(
+                  itemCount: controller.basketItems.length,
+                  itemBuilder: (context, index) {
+                    final basketItem = controller.basketItems[index];
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 80,
+                                height: 80, // ekhane height set kora
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color:
+                                      colorForContainer[index %
+                                          colorForContainer.length],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Image.asset(
+                                    basketItem.imgPath,
+                                    width: 30,
+                                    height: 30,
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                basketItem.name,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
+                              SizedBox(width: 16),
+                              Expanded(
+                                child: Text(
+                                  basketItem.name,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
-                            ),
-                            /*            IconButton(
+                              /*            IconButton(
                                 icon: Icon(Icons.favorite, color: Colors.orange),
                                 onPressed: () {
                                   controller.toggleFavorite(fruits);
                                 },
                               ),*/
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      Divider(color: Colors.grey[200]),
-                    ],
-                  );
-                },
-              );
-            }),
+                        Divider(color: Colors.grey[200]),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           ),
           Container(
             child: Padding(
@@ -114,12 +116,14 @@ class MyBasket extends StatelessWidget {
                             width: 20,
                           ),
                           SizedBox(width: 8),
-                          Obx(() {
-                            return Text(
-                              '${basketController.totalPrice.toStringAsFixed(2)}',
-                              style: TextStyle(fontSize: 25),
-                            );
-                          }),
+                            Consumer<BasketController>(builder: (context,controller,child){
+                              return Text(
+                                '${controller.totalPrice.toStringAsFixed(2)}',
+                                style: TextStyle(fontSize: 25),
+                              );
+                            }
+
+                          ),
                         ],
                       ),
                     ],
@@ -202,8 +206,10 @@ class MyBasket extends StatelessWidget {
                                             ),
                                             child: Center(
                                               child: GestureDetector(
-                                                onTap: (){
-                                                  Get.toNamed(OrderCompleteScreen.name);
+                                                onTap: () {
+                                                  Get.toNamed(
+                                                    OrderCompleteScreen.name,
+                                                  );
                                                 },
                                                 child: Text(
                                                   'Pay on delivery',
@@ -240,7 +246,9 @@ class MyBasket extends StatelessWidget {
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
                                                         SizedBox(height: 20),
                                                         Padding(
@@ -378,18 +386,36 @@ class MyBasket extends StatelessWidget {
                                                                 ),
                                                           ),
                                                           child: GestureDetector(
-                                                            onTap: ()=>Get.toNamed(OrderCompleteScreen.name),
+                                                            onTap: () =>
+                                                                Get.toNamed(
+                                                                  OrderCompleteScreen
+                                                                      .name,
+                                                                ),
                                                             child: Center(
-                                                              child:Container(
+                                                              child: Container(
                                                                 height: 50,
                                                                 width: 120,
                                                                 decoration: BoxDecoration(
-                                                                  color: Colors.white,
-                                                                  borderRadius: BorderRadius.circular(10),
+                                                                  color: Colors
+                                                                      .white,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        10,
+                                                                      ),
                                                                 ),
                                                                 child: Center(
-                                                                    child: Text('Complete order',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: Colors.orange),),
-                                                            
+                                                                  child: Text(
+                                                                    'Complete order',
+                                                                    style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      color: Colors
+                                                                          .orange,
+                                                                    ),
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ),

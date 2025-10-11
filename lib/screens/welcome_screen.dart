@@ -87,8 +87,9 @@ class WelcomeScreen extends StatelessWidget {
                         SizedBox(height: screenHeigth * 0.05),
 
                         CustomElevatedButton(
-                          onPressed: () =>
-                              Get.toNamed(AuthenticationScreen.name),
+                          onPressed: (){
+                            Navigator.pushReplacementNamed(context, AuthenticationScreen.name);
+                          },
                           screenHeigth: screenHeigth,
                           screenWidth: screenWidth, buttonText: "Let’s Continue",
                         ),

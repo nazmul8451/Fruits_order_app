@@ -4,7 +4,7 @@ import 'package:e_commerce_ui/service_center/basket_controller.dart';
 import 'package:e_commerce_ui/service_center/favorite_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:provider/provider.dart';
 class Custom_fruit_card extends StatelessWidget {
    Custom_fruit_card({
     super.key,
@@ -18,8 +18,6 @@ class Custom_fruit_card extends StatelessWidget {
   final double width;
   final Color colorForCard;
   final double heigth;
-  final FavoriteController controller = Get.find();
-  final BasketController basketController = Get.find();
   FruitItem fruit;
   @override
   Widget build(BuildContext context) {
@@ -37,18 +35,21 @@ class Custom_fruit_card extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Obx(()=> IconButton(
-                    onPressed: (){
-                      controller.toggleFavorite(fruit);
-                    },
-                    icon:Icon(
-                      fruit.isFavorite.value
-                          ? Icons.favorite
-                          : Icons.favorite_border,
-                      color: Colors.orange,
-                    ),
-                  ),
-                ),
+                Consumer<FavoriteItemController>(
+                  builder:(context,controller,child) {
+                    return IconButton(
+                      onPressed: () {
+                        controller.toggleFavorite(fruit);
+                      },
+                      icon: Icon(
+                        fruit.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: Colors.orange,
+                      ),
+                    );
+                  }
+    ),
               ],
             ),
             Container(
